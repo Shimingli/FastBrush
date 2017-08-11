@@ -2,6 +2,8 @@ package co.adrianblan.fastbrush;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -27,6 +33,7 @@ public class Main2Activity extends AppCompatActivity {
     private File mPhoto;
     private Bitmap mBitmap;
     private EditText mEText;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,28 +44,44 @@ public class Main2Activity extends AppCompatActivity {
         mSaveButton = (Button) findViewById(R.id.save);
         mBitmapButton = (Button) findViewById(R.id.bitmap);
         mEText = (EditText) findViewById(R.id.modify_edit_text_view);
+        mClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMyGLSurfaceView.clearScreen();
+            }
+        });
+        mImageView = (ImageView) findViewById(R.id.iamgeview);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bitmap signatureBitmap = mMyGLSurfaceView.getRenderer().getBitmap();
-                mMyGLSurfaceView.saveImage();
-                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/FastBrush"); //Creates app specific folder
-                path.mkdirs();
-                File imageFile = new File(path, "shiming" + ".png"); // Imagename.png
-                saveBitmap(imageFile);
+//                mImageView.setVisibility(View.VISIBLE);
+//                mImageView.setImageBitmap(signatureBitmap);
+                boolean b = addJpgSignatureToGallery(signatureBitmap);
+                if (b){
+                    saveBitmap(mPhoto);
+                    mMyGLSurfaceView.clearScreen();
+                }
+                //                mMyGLSurfaceView.saveImage();
+//                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/FastBrush"); //Creates app specific folder
+//                path.mkdirs();
+//                File imageFile = new File(path, "shiming" + ".png"); // Imagename.png
+//                saveBitmap(imageFile);
 
             }
         });
     }
+
     private static String full_name = "";
     private static final String LAST_NAME = "img_";
     private int first_name = 1;
+
     public void saveBitmap(File path) {
         mBitmap = null;
         try {
             FileInputStream fis = new FileInputStream(path);
-            Bitmap bitmap  = BitmapFactory.decodeStream(fis);
-            mBitmap = BitmapUtils.resizeImage(bitmap, 150,150);
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            mBitmap = BitmapUtils.resizeImage(bitmap, 150, 150);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -83,18 +106,29 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    //    public boolean addJpgSignatureToGallery(Bitmap signature) {
-//        boolean result = false;
-//        try {
-//            mPhoto = new File(getAlbumStorageDir("SignaturePad"), String.format("Signature_%d.jpg", System.currentTimeMillis()));
-//            saveBitmapToJPG(signature, mPhoto);
-//            mAbsolutePath = mPhoto.getAbsolutePath();
-//            result = true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
+    public boolean addJpgSignatureToGallery(Bitmap signature) {
+        boolean result = false;
+        try {
+            mPhoto = new File(getAlbumStorageDir("SignaturePad"), String.format("Signature_%d.jpg", System.currentTimeMillis()));
+            saveBitmapToJPG(signature, mPhoto);
+            result = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public void saveBitmapToJPG(Bitmap bitmap, File photo) throws IOException {
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        OutputStream stream = new FileOutputStream(photo);
+        //图片的质量
+        newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        stream.close();
+    }
+
     public File getAlbumStorageDir(String albumName) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
@@ -104,6 +138,7 @@ public class Main2Activity extends AppCompatActivity {
         }
         return file;
     }
+
     @Override
     protected void onPause() {
         super.onPause();
