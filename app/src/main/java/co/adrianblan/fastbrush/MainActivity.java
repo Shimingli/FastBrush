@@ -1,6 +1,7 @@
 package co.adrianblan.fastbrush;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,10 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import butterknife.Bind;
@@ -20,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.adrianblan.fastbrush.dialog.BrushDialogFragment;
 import co.adrianblan.fastbrush.dialog.InkDialogFragment;
-import co.adrianblan.fastbrush.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
         mainView.addView(glSurfaceView, 0);
 
         hideSystemUi();
+
+        findViewById(R.id.but_go).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,Main2Activity.class));
+            }
+        });
     }
 
     @OnClick(R.id.button_brush)

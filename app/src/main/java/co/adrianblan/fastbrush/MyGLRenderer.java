@@ -15,9 +15,6 @@
  */
 package co.adrianblan.fastbrush;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,16 +31,19 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-import co.adrianblan.fastbrush.compute.PhysicsCompute;
-import co.adrianblan.fastbrush.touch.TouchData;
-import co.adrianblan.fastbrush.touch.TouchDataManager;
-import co.adrianblan.fastbrush.file.ImageSaver;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 import co.adrianblan.fastbrush.buffer.BackBufferManager;
+import co.adrianblan.fastbrush.compute.PhysicsCompute;
+import co.adrianblan.fastbrush.file.ImageSaver;
 import co.adrianblan.fastbrush.globject.BackBufferSquare;
 import co.adrianblan.fastbrush.globject.Brush;
 import co.adrianblan.fastbrush.globject.Line;
 import co.adrianblan.fastbrush.settings.SettingsData;
 import co.adrianblan.fastbrush.settings.SettingsManager;
+import co.adrianblan.fastbrush.touch.TouchData;
+import co.adrianblan.fastbrush.touch.TouchDataManager;
 import co.adrianblan.fastbrush.utils.TimeProfilerHelper;
 import co.adrianblan.fastbrush.utils.Utils;
 import co.adrianblan.fastbrush.vector.Vector2;
@@ -447,7 +447,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Bitmap b = createBitmapFromPixelBuffer(pixelBuffer);
         ImageSaver.saveImageToStorage(b, context);
     }
+    public Bitmap getBitmap(){
+        int[] pixelBuffer = getPixelBufferFromScreen();
+        Utils.convertRGBtoBGR(pixelBuffer);
+        Bitmap b = createBitmapFromPixelBuffer(pixelBuffer);
+        return b;
 
+    }
     /** Creates a bitmap from the current screen */
     private Bitmap createBitmapFromPixelBuffer(int[] pixelBuffer) {
 

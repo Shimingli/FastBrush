@@ -83,4 +83,12 @@
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/but_go"
+        android:text="go_2_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

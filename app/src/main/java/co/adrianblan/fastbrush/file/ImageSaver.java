@@ -1,23 +1,16 @@
 package co.adrianblan.fastbrush.file;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Class which saves images to internal storage.
@@ -32,7 +25,8 @@ public class ImageSaver {
         System.err.println("Saving");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyddMM-hh:mm:ss");
-        String imageName = dateFormat.format(new Date());
+//        String imageName = dateFormat.format(new Date());
+        String imageName = "shiming";
 
         MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmapImage, imageName, "FastBrush");
 
@@ -59,6 +53,5 @@ public class ImageSaver {
             e.printStackTrace();
         }
     }
-
 
 }
